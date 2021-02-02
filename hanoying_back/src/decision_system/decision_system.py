@@ -1,12 +1,15 @@
 #! /usr/bin/python3
+from typing import List
+
 import rospy
 
-from hanoying_back.msg import GameState, GameMoveGoal, GameSolve, GameSolveResponse
+from hanoying_back.msg import GameState, GameMoveGoal
+from hanoying_back.srv import GameSolve, GameSolveResponse
 
 rospy.init_node("decision_system")
 
-decision: GameMoveGoal = None
-solution: list[GameMoveGoal] = []
+decision: GameMoveGoal = GameMoveGoal()
+solution: List[GameMoveGoal] = []
 
 def update_decision():
     global decision, solution
@@ -18,7 +21,7 @@ def update_solution(state):
     try:
         # TODO: trynsee if I can.. keep the same proxy for each calls?
         solve = rospy.ServiceProxy("/game/solve", GameSolve)
-        solution = solve(state)
+        solution = solve(state).moves
     except rospy.ServiceException as e:
         print("Solver service call failed (" + e + ").")
 

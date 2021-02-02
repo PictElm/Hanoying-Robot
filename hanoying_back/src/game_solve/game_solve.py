@@ -1,10 +1,10 @@
 #! /usr/bin/python3
 import rospy
 
-from .solver import solve
-from .rules import validate, list_possible
+from solver import solve
+from rules import validate, list_possible
 
-from hanoying_back.msg import GameSolve, GameSolveResponse, GameSolveValidate, GameSolveValidateResponse, GameSolveList, GameSolveListResponse
+from hanoying_back.srv import GameSolve, GameSolveResponse, GameSolveValidate, GameSolveValidateResponse, GameSolveList, GameSolveListResponse
 
 rospy.init_node("game_solve")
 

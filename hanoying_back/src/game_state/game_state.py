@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 import rospy
 
-from .process import process
+from process import process
 
 from hanoying_back.msg import GameRaw, GameState
 

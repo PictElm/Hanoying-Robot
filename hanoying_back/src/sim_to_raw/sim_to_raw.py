@@ -1,4 +1,6 @@
 #! /usr/bin/python3
+from typing import List
+
 import rospy
 
 from geometry_msgs.msg import Point
@@ -25,7 +27,7 @@ class DiskObject:
     def unsubscribe(self):
         self._sub.unregister()
 
-disks: list[DiskObject] = []
+disks: List[DiskObject] = []
 
 def load_game_param(diskNamesParam: str):
     global disks

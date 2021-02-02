@@ -1,7 +1,8 @@
 #! /usr/bin/python3
 import rospy
 
-from hanoying_back.msg import GameState, GameMoveGoal, GameSolveResponse
+from hanoying_back.msg import GameState, GameMoveGoal
+from hanoying_back.srv import GameSolveResponse
 
 rospy.init_node("gui")
 
@@ -27,7 +28,7 @@ def show_game_state(msg: GameState):
 sub_game_state = rospy.Subscriber("/game/state", GameState, show_game_state)
 
 def plho_cb(msg):
-    print("received", msg)
+    pass #print("received", msg)
 
 sub_decision = rospy.Subscriber("/decisys/decision", GameMoveGoal, plho_cb)
 sub_solution = rospy.Subscriber("/decisys/solution", GameSolveResponse, plho_cb)

@@ -1,4 +1,6 @@
 #! /usr/bin/python3
+from typing import List
+
 import rospy
 
 from geometry_msgs.msg import Point
@@ -8,10 +10,14 @@ ALLOWED_DISK_DISTANCE = rospy.get_param("/game/allowed_disk_distance", .1)
 
 class PointObject:
     def __init__(self, x, y=None, z=None):
-        if z == None:
+        if isinstance(x, str):
             self.x = rospy.get_param(x + "/x")
             self.y = rospy.get_param(x + "/y")
             self.z = rospy.get_param(x + "/z")
+        elif isinstance(x, Point):
+            self.x = x.x
+            self.y = x.y
+            self.z = x.z
         else:
             self.x = x
             self.y = y
@@ -28,7 +34,7 @@ class TowerObject:
         self.name = name
         self.pos = pos
 
-        self._disks: 'list[DiskObject]' = []
+        self._disks: 'List[DiskObject]' = []
 
     def append(self, disk: 'DiskObject'):
         self._disks.append(disk)
@@ -40,7 +46,7 @@ class TowerObject:
         return Tower(name=self.name, disks=[it.name for it in self._disks])
 
 class DiskObject:
-    def __init__(self, name: str, pos: PointObject, towers: list[TowerObject], floating: TowerObject):
+    def __init__(self, name: str, pos: PointObject, towers: List[TowerObject], floating: TowerObject):
         self.name = name
         self.pos = PointObject(0, 0, 0)
         self._tower = floating
@@ -65,7 +71,7 @@ def process(raw: GameRaw) -> GameState:
 
     towers = [TowerObject(name, PointObject("/game/tower" + name)) for name in towerNames if name]
     floating = TowerObject("floating", None)
-    disks = [DiskObject(name, point, towers, floating) for name, point in zip(raw.disk_names, raw.disk_points)]
+    disks = [DiskObject(name, PointObject(point), towers, floating) for name, point in zip(raw.disk_names, raw.disk_points)]
 
     return GameState(
         disks=[it.get_message() for it in disks],

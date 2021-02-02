@@ -2,7 +2,7 @@
 import rospy
 import actionlib
 
-from .do_move import move
+from do_move import move
 
 from hanoying_back.msg import GameMoveAction, GameMoveResult
 
