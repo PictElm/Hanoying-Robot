@@ -1,4 +1,6 @@
 <launch>
+    <!-- A bit experimental, please do not use... -->
+
     <param name="/game/allowed_disk_distance" type="double" value=".1"/>
 
     <param name="/game/towers" type="string" value="A;B;C"/>

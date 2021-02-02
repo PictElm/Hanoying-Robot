@@ -1,6 +1,8 @@
 <launch>
+    <node pkg="hanoying_back" type="sim_to_raw.py" name="sim_to_raw"/>
+
     <node pkg="hanoying_back" type="game_state.py" name="game_state"/>
     <node pkg="hanoying_back" type="game_solve.py" name="game_solve"/>
-    <node pkg="hanoying_back" type="game_move_server.py" name="game_move_server"/>
+    <node pkg="hanoying_back" type="game_move.py" name="game_move"/>
     <node pkg="hanoying_back" type="decision_system.py" name="decision_system"/>
 </launch>

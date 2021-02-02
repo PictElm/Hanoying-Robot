@@ -2,7 +2,9 @@
 
 This ROS project presents 2 packages (`hanoying_back`, `hanoying_front`).
 
-The setup as-is was intended for the game "Towers of Hanoi", but should be adaptable (see [here](#Changing%20the%20game))
+The setup as-is was intended for the game "Towers of Hanoi", but should be adaptable (see [there](#Changing%20the%20game))
+
+This version relies on a simulator (coppeliaSim) but can be adapted to work with a real setup (see [here](#Adapting%20to%20a%20real%20setup))
 
 ## roslaunch _that_
 
@@ -16,71 +18,38 @@ To run the setup:
     * `catkin_make`
     * `source devel/setup.bash`
   0. start the nodes from the `hanoying_back` package first: `roslaunch hanoying_back back.launch`
-  0. start the nodes from the `hanoying_front` package with `roslaunch hanoying_font font.launch`
+  0. start the nodes from the `hanoying_front` package with `roslaunch hanoying_front front.launch`
 
 > Note: it should behave fine even if `hanoying_back`'s nodes are started after, or restarted at anytime.
+
+**TODO** a "healthy system" graph (ros_graph).
 
 ## ROS objects list
 
 The parameters, topics, services and action servers are all provided by the hanoying_back package, or coppeliaSim.
 
-### Nodes (see dependencies [here](#Dependencies))
-  - `hanoying_back`
-    - `game_state.py`
-    - `game_solve.py`
-    - `game_move_server.py`
-    - `decision_system.py`
-  - `hanoying_front`
-    - `ctrl.py`
-    - `gui.py`
+> List was getting pretty long, so I moved it to [another file](OBJ_LIST.md).
 
-### Parameters
-  - `/game/allowed_disk_distance: double`
-  - `/game/towers: string`
-  - `/game/disks: string`
-  - `/game/tower{name}/{x|y|z}: double`
+## Making the robot smart
 
-### Topics
-  - `/game/raw/disk{name}: geometry_msgs/Point` (published from coppeliaSim for message compatibility reasons)
-  - `/game/state: hanoying_back/GameState`
-  - `/decisys/decision: hanoying_back/GameMoveGoal`
-  - `/decisys/solution: hanoying_back/GameSolveResponse`
+**TODO** the behavior of the robot is expected to be implemented in the `decision_system` node (for now, it just finds a solution from the current state, and _think_ about doing it).
 
-### Services
-  - `/game/solve: hanoying_back/GameSolve`
-  - `/game/solve/valid: hanoying_back/GameSolveValidate`
-  - `/game/solve/possible: hanoying_back/GameSolveList`
+## Adapting to a real setup
 
-### Action servers
-  - `/game/move: hanoying_back/GameMoveAction`
+Because this relies directly on the simulator, a few changes will need to be made before using on a real (physical) setup;
 
-## Dependencies
+The `sim_to_raw` node have for objective to fake the simulation's capture as raw input to the hanoying_back (this hack was made to go around recompiling the ROSInterface to account for new message types). This is the node to replace with a 'real' one that would publish to `/game/raw`, as well as updating the `GameRaw.msg` with whatever the sensors being used deliver.
 
-### `game_state.py`
-  - `/game/allowed_disk_distance`
-  - `/game/towers`
-  - `/game/disks`
-  - `/game/tower{name}/{x|y|z}`
-  - `/game/raw/disk{name}`
+Example:
+```GameRaw.msg
+sensor_msgs/Image cam1
+sensor_msgs/Image cam2
+double weights[]
+```
 
-### `game_solve.py`
-  - &dash;
+Another point will be to update the `game_state/process.py` which must process a raw `GameRaw` message into a usable `GameState` message.
 
-### `game_move_server.py`
-  - `/game/towers`
-  - `/game/disks`
-
-### `decision_system.py`
-  - `/game/state`
-  - `/game/solve`
-
-### `ctrl.py`
-  - `/game/move`
-
-### `gui.py`
-  - `/game/state`
-  - `/decisys/decision`
-  - `/decisys/solution`
+**TODO** finally, the control of the robot needs to be adapted as well in `game_move/do_move.py`.
 
 ## Changing the game
 
@@ -91,7 +60,7 @@ In the `hanoying_back` package:
   - `action/GameMove.action` must be able to reflect any move in the game [^1]
   - if the previous points require adding custom messages, update `CMakeLists.txt` to include them
   - `src/game_state.py` must be able to provide the current state of the game (publish through `/game/state` as a `GameState`) from raw sensors
-  - `src/game_move_server/do_move.py` must enable to execute any given `GameMove` [^2]
+  - `src/game_move/do_move.py` must enable to execute any given `GameMove` [^2]
   - `src/game_solve/solver.py` must be able to solve the game from any `GameState`, resulting in a (potentially empty) `GameMoveGoal[]`
   - `src/game_solve/rules.py` should be able to validate a move and list every possible moves from a `GameState`
 

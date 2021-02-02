@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 from typing import Callable, Any
 
 import rospy
@@ -20,6 +21,8 @@ def move(game_move: GameMoveGoal, on_feedback: Callable[[GameMoveFeedback], Any]
     can_do = True
     reason = 0
 
+    # TODO: remove..? 2 first checks should be done elswhere
+
     if not (disk := game_move.disk) in rospy.get_param("/game/disks", "").split(";"):
         can_do = False
         reason|= 1
@@ -30,7 +33,7 @@ def move(game_move: GameMoveGoal, on_feedback: Callable[[GameMoveFeedback], Any]
 
     # disk and tower locations can be obtained using:
     # ```
-    # src = rospy.wait_for_message(f"/game/raw/disk{disk}", Point)
+    # src = rospy.wait_for_message("/game/state", GameState).disk WHERE name="{disk}"
     # dst = rospy.get_param(f"/game/tower{tower}/{x|y|z}")
     # ```
     # 

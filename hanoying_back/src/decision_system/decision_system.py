@@ -12,17 +12,17 @@ def update_decision():
     global decision, solution
     decision = solution[0] if 0 < len(solution) else GameMoveGoal()
 
-def update_solution(game_state):
+def update_solution(state):
     global decision, solution
     rospy.wait_for_service("/game/solve")
     try:
         # TODO: trynsee if I can.. keep the same proxy for each calls?
         solve = rospy.ServiceProxy("/game/solve", GameSolve)
-        solution = solve(game_state)
+        solution = solve(state)
     except rospy.ServiceException as e:
         print("Solver service call failed (" + e + ").")
 
-callback = lambda game_state: [update_solution(game_state), update_decision()]
+callback = lambda msg: [update_solution(msg), update_decision()]
 sub_game_state = rospy.Subscriber("/game/state", GameState, callback)
 
 pub_decision = rospy.Publisher("/decisys/decision", GameMoveGoal, queue_size=10)

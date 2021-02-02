@@ -1,0 +1,57 @@
+#! /usr/bin/python3
+import rospy
+
+from geometry_msgs.msg import Point
+from hanoying_back.msg import GameRaw
+
+rospy.init_node("sim_to_raw")
+
+class DiskObject:
+    def __init__(self, name: str):
+        self.name = name
+        self.x = 0
+        self.y = 0
+        self.z = 0
+
+        def _cb(msg):
+            self.x = msg.x
+            self.y = msg.y
+            self.z = msg.z
+        self._sub = rospy.Subscriber(f"/game/sim/disk{name}", Point, _cb)
+
+    def get_point_msg(self) -> Point:
+        return Point(x=self.x, y=self.y, z=self.z)
+
+    def unsubscribe(self):
+        self._sub.unregister()
+
+disks: list[DiskObject] = []
+
+def load_game_param(diskNamesParam: str):
+    global disks
+
+    for it in disks:
+        it.unsubscribe()
+
+    diskNames = diskNamesParam.split(';')
+    disks = [DiskObject(name) for name in diskNames if name]
+
+diskNamesParam = ""
+pub = rospy.Publisher("/game/raw", GameRaw, queue_size=10)
+rate = rospy.Rate(3)
+
+while not rospy.is_shutdown():
+    if diskNamesParam != (diskNamesParam := rospy.get_param("/game/disks", "")):
+        load_game_param(diskNamesParam)
+
+    msg_names = []
+    msg_points = []
+    for it in disks:
+        msg_names.append(it.name)
+        msg_points.append(it.get_point_msg())
+
+    pub.publish(
+        disk_names=msg_names,
+        disk_points=msg_points,
+    )
+    rate.sleep()

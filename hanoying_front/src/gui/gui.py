@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 import rospy
-from hanoying_back.msg import GameState
+
+from hanoying_back.msg import GameState, GameMoveGoal, GameSolveResponse
 
 rospy.init_node("gui")
 
@@ -14,19 +15,21 @@ def show_game_state(msg: GameState):
     else:
         r+= "no tower registered (is hanoying_back running?)"
 
-    r+= f"\nfloating:\n"
-    if msg.floating_disks:
-        for disk, pos in zip(msg.floating_disks, msg.floating_points):
-            r+= f"\t{disk} ({pos.x}, {pos.y}, {pos.z})\n"
+    r+= "\nfloating:\n"
+    if msg.floating.disks:
+        r+= "\t" + " ".join(msg.floating.disks)
     else:
         r+= "\tnone"
-
     r+= "\n"
-    rospy.logout(r) # TODO: open some kind of R-Viz window
+
+    rospy.logout(r + "\n\n") # TODO: open some kind of R-Viz window
 
 sub_game_state = rospy.Subscriber("/game/state", GameState, show_game_state)
 
-# sub4 = rospy.Subscriber("/decisys/decision", Int64, cb)
-# sub5 = rospy.Subscriber("/decisys/solution", Int64, cb)
+def plho_cb(msg):
+    print("received", msg)
+
+sub_decision = rospy.Subscriber("/decisys/decision", GameMoveGoal, plho_cb)
+sub_solution = rospy.Subscriber("/decisys/solution", GameSolveResponse, plho_cb)
 
 rospy.spin()

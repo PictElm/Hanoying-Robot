@@ -6,7 +6,7 @@ from .do_move import move
 
 from hanoying_back.msg import GameMoveAction, GameMoveResult
 
-rospy.init_node("game_move_server")
+rospy.init_node("game_move")
 
 def do_feedback(feedback):
     if act.is_preempt_requested():
