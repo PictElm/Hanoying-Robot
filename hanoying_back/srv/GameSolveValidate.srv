@@ -1,0 +1,4 @@
+hanoying_back/GameState state # state of the game
+hanoying_back/GameMoveGoal move # move to validate
+---
+bool valid

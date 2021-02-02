@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="hanoying_front" type="ctrl.py" name="ctrl" output="screen"/>
+    <node pkg="hanoying_front" type="gui.py" name="gui" output="screen"/>
+</launch>

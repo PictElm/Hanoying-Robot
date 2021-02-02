@@ -1,0 +1,24 @@
+<launch>
+    <param name="/game/allowed_disk_distance" type="double" value=".1"/>
+
+    <param name="/game/towers" type="string" value="A;B;C"/>
+        <param name="/game/towerA/x" type="double" value="0"/>
+        <param name="/game/towerA/y" type="double" value="0"/>
+        <param name="/game/towerA/z" type="double" value="0"/>
+
+        <param name="/game/towerB/x" type="double" value="1"/>
+        <param name="/game/towerB/y" type="double" value="0"/>
+        <param name="/game/towerB/z" type="double" value="0"/>
+
+        <param name="/game/towerC/x" type="double" value=".5"/>
+        <param name="/game/towerC/y" type="double" value=".866"/>
+        <param name="/game/towerC/z" type="double" value="0"/>
+
+    <param name="/game/disks" type="string" value="1;2;3"/>
+        <!-- /game/disk{name}: geometry_msgs/Point for each disk -->
+
+    <!--include file="$(find hanoying_setup)/launch/setup.launch"/-->
+
+    <include file="$(find hanoying_back)/launch/back.launch"/>
+    <include file="$(find hanoying_front)/launch/front.launch"/>
+</launch>

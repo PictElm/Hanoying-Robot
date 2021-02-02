@@ -1,0 +1,3 @@
+hanoying_back/GameState state # current state of the game
+---
+hanoying_back/GameMoveGoal[] moves # possible (valid) moves
