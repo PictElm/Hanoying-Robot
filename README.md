@@ -4,14 +4,14 @@ This ROS project presents 2 packages (`hanoying_back`, `hanoying_front`).
 
 The setup as-is was intended for the game "Towers of Hanoi", but should be adaptable (see [there](#Changing%20the%20game))
 
-This version relies on a simulator (coppeliaSim) but can be adapted to work with a real setup (see [here](#Adapting%20to%20a%20real%20setup))
+This version relies on a simulator (CoppeliaSim) but can be adapted to work with a real setup (see [here](#Adapting%20to%20a%20real%20setup))
 
 ## roslaunch _that_
 
 To run the setup:
   1. you must have a ROS master running at all time (`roscore`) and source your `/opt/ros/${version}/setup.bash` from every terminal
-  0. start coppeliaSim and ensure both ROSInterface and RemoteApi plugin are loaded successfully
-  0. add the Python binding of the RemoteApi `sim.py` to $PYTHONPATH (it should be in `${coppeliaSim root dir}/programming/remoteApiBindings/python`)
+  0. start CoppeliaSim and ensure both ROSInterface and RemoteApi plugin are loaded successfully
+  0. add the Python binding of the RemoteApi `sim.py` to $PYTHONPATH (it should be in `${CoppeliaSim root dir}/programming/remoteApiBindings/python`)
   0. (make sure to have the `remoteApi.so` in the same folder as `sim.py`, if it's not, copy it over from the `/remoteApiBindings/lib/lib`)
   0. build your catkin_workspace and source everything you can to save you sanity, or just:
     * `cd ~/catkin_ws`
@@ -26,7 +26,7 @@ To run the setup:
 
 ## ROS objects list
 
-The parameters, topics, services and action servers are all provided by the hanoying_back package, or coppeliaSim.
+The parameters, topics, services and action servers are all provided by the hanoying_back package, or CoppeliaSim.
 
 > List was getting pretty long, so I moved it to [another file](OBJ_LIST.md).
 

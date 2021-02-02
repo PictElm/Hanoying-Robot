@@ -18,7 +18,7 @@
   - `/game/tower{name}/{x|y|z}: double`
 
 ### Topics
-  - `/game/sim/disk{name}: geometry_msgs/Point` (published from coppeliaSim for message compatibility reasons)
+  - `/game/sim/disk{name}: geometry_msgs/Point` (published from CoppeliaSim for message compatibility reasons)
   - `/game/raw: hanoying_back/GameRaw`
   - `/game/state: hanoying_back/GameState`
   - `/decisys/decision: hanoying_back/GameMoveGoal`

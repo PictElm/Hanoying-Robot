@@ -57,7 +57,7 @@ def move(game_move: GameMoveGoal, on_feedback: Callable[[GameMoveFeedback], Any]
     else:
         feedback = GameMoveFeedback()
 
-        # move piece in coppeliaSim with setStringSignal("move", -)
+        # move piece in CoppeliaSim with setStringSignal("move", -)
         sim.simxSetStringSignal(simxClient, "move", f"{disk}-{tower}", sim.simx_opmode_oneshot)
 
         for k in range(101): # let's just pretend the robot is moving for 2s...
