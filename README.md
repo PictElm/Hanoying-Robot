@@ -1,5 +1,7 @@
 # The Hanoying Robot
 
+> First: create a catkin workspace and put this repo in the `src/` directory.
+
 This ROS project presents 2 packages (`hanoying_back`, `hanoying_front`).
 
 The setup as-is was intended for the game "Towers of Hanoi", but should be adaptable (see [there](#Changing%20the%20game))
