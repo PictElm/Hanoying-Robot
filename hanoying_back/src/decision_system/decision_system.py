@@ -11,26 +11,32 @@ rospy.init_node("decision_system")
 decision: GameMoveGoal = GameMoveGoal()
 solution: List[GameMoveGoal] = []
 
+solve = rospy.ServiceProxy("/game/solve", GameSolve)
+
 def update_decision():
-    global decision, solution
+    global decision
     decision = solution[0] if 0 < len(solution) else GameMoveGoal()
 
 def update_solution(state):
-    global decision, solution
-    rospy.wait_for_service("/game/solve")
+    global solution
     try:
-        # TODO: trynsee if I can.. keep the same proxy for each calls?
-        solve = rospy.ServiceProxy("/game/solve", GameSolve)
+        rospy.wait_for_service("/game/solve", 10)
+    except rospy.exceptions.ROSException as e:
+        solution = []
+        print("No response from solver service (" + str(e) + ")")
+        return
+    try:
         solution = solve(state).moves
     except rospy.ServiceException as e:
-        print("Solver service call failed (" + e + ").")
+        solution = []
+        print("Solver service call failed (" + str(e) + ").")
 
 callback = lambda msg: [update_solution(msg), update_decision()]
 sub_game_state = rospy.Subscriber("/game/state", GameState, callback)
 
 pub_decision = rospy.Publisher("/decisys/decision", GameMoveGoal, queue_size=10)
 pub_solution = rospy.Publisher("/decisys/solution", GameSolveResponse, queue_size=10)
-rate = rospy.Rate(3)
+rate = rospy.Rate(rospy.get_param("/decisys/rate", 3))
 
 while not rospy.is_shutdown():
     pub_decision.publish(decision)

@@ -17,8 +17,8 @@ To run the setup:
     * `cd ~/catkin_ws`
     * `catkin_make`
     * `source devel/setup.bash`
-  0. start the nodes from the `hanoying_back` package first: `roslaunch hanoying_back back.launch`
-  0. start the nodes from the `hanoying_front` package with `roslaunch hanoying_front front.launch`
+  0. start the nodes from the `hanoying_back` package first (or use `roslaunch hanoying_back back.launch`)
+  0. then start the nodes from the `hanoying_front` package (or use `roslaunch hanoying_front front.launch`)
 
 > Note: it should behave fine even if `hanoying_back`'s nodes are started after, or restarted at anytime.
 
@@ -26,13 +26,13 @@ To run the setup:
 
 ## ROS objects list
 
-The parameters, topics, services and action servers are all provided by the hanoying_back package, or CoppeliaSim.
+The parameters, topics, services and action servers are all provided by the `hanoying_back` package, or CoppeliaSim. So the assiciated types (msg, srv and action) are also part of `hanoying_back`.
 
 > List was getting pretty long, so I moved it to [another file](OBJ_LIST.md).
 
 ## Making the robot smart
 
-**TODO** the behavior of the robot is expected to be implemented in the `decision_system` node (for now, it just finds a solution from the current state, and _think_ about doing it).
+The behavior of the robot should be implemented in the `decision_system` node (for now, it just finds a solution from the current state and intend to do the first move).
 
 ## Adapting to a real setup
 
@@ -49,25 +49,28 @@ double weights[]
 
 Another point will be to update the `game_state/process.py` which must process a raw `GameRaw` message into a usable `GameState` message.
 
-**TODO** finally, the control of the robot needs to be adapted as well in `game_move/do_move.py`.
+Finally, the control of the robot needs to be adapted in the `game_move/do_move.py`.
 
 ## Changing the game
 
 The setup should allow to implement some other games. To do exactly that, the following must be updated accordingly;
 
 In the `hanoying_back` package:
+  - `msg/GameRaw.msg` must be able to carry every sensory input you need to evaluate game state
   - `msg/GameState.msg` must be able to reflect any state of the game
   - `action/GameMove.action` must be able to reflect any move in the game [^1]
   - if the previous points require adding custom messages, update `CMakeLists.txt` to include them
-  - `src/game_state.py` must be able to provide the current state of the game (publish through `/game/state` as a `GameState`) from raw sensors
+  - `src/game_state/process.py` must be able to provide game state  as a `GameState` from a `GameRaw`
   - `src/game_move/do_move.py` must enable to execute any given `GameMove` [^2]
-  - `src/game_solve/solver.py` must be able to solve the game from any `GameState`, resulting in a (potentially empty) `GameMoveGoal[]`
-  - `src/game_solve/rules.py` should be able to validate a move and list every possible moves from a `GameState`
+  - `src/game_solve/solver.py` must be able to solve the game from any `GameState`, resulting in a (potentially empty) `GameMoveGoal[]` [^3]
+  - `src/game_solve/rules.py` should be able to validate a move (results in `bool`) and list every possible moves from a `GameState` (results in `GameMoveGoal[]`)
 
 In the `hanoying_front` package:
   - `src/ctrl/ctrl.py` (see comments in file, mainly used for debugging RN...)
   - `src/gui/gui.py` sub to `/game/state`, `/decisys/*` and whatever else you want, make yourself at home
 
-[^1]: In the action file, only need to be updated the goal (first part) and feedback (last part) as needed; `reason` should carry custom flags to interpret why a move failed (only the bit 8 is reserved: -128 aborted/preempted).
+[^1]: In the action file, only needs to be updated the goal (first part) and feedback (last part) as needed; `reason` should carry custom flags to interpret why a move failed (only the bit 8 is reserved: -128 aborted/preempted).
 
 [^2]: This node is only expected to do the move, regardless of validity regarding game rules (only failing when the move is not possible); for move validity check against game rules, see `game_solve/rules.py`.
+
+[^3]: `GameMoveGoal` correspond to the first part of `GameMove.action`, see [this list](OBJ_LIST.md#Types) for more details list of the added ROS types.

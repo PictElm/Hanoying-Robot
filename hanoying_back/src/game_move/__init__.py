@@ -26,12 +26,12 @@ through `setStringSignal("move", -)` then wait for 2s
         string disk # move disk..
         string tower # ..to tower
         geometry_msgs/Point floating_point # if tower=="floating",
-                                           # tries to reach this position
+                                        # tries to reach this position
         ---
         bool success # if success==False, refer to reason
         int8 reason # -128: aborted/preempted, 0: none,
-                    # 1: unknown disk, 2: unknown tower,
-                    # 4: unreachable
+                    # 1: disk unreachable, 2: tower unreachable,
+                    # 4: point unreachable
         ---
         float32 percent
         geometry_msgs/Transform wrist # maybe?

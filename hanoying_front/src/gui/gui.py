@@ -6,6 +6,8 @@ from hanoying_back.srv import GameSolveResponse
 
 rospy.init_node("gui")
 
+# TODO: open some kind of R-Viz window
+
 def show_game_state(msg: GameState):
     r = "\n"
 
@@ -23,14 +25,20 @@ def show_game_state(msg: GameState):
         r+= "\tnone"
     r+= "\n"
 
-    rospy.logout(r + "\n\n") # TODO: open some kind of R-Viz window
+    print(r + "\n\n")
+
+def show_decision(msg: GameMoveGoal):
+    r = f"\ndecision: {msg.disk}-{msg.tower}"
+    print(r + "\n\n")
+
+def show_solution(msg: GameSolveResponse):
+    plural = "s" if len(msg.moves) else ""
+    r = f"\nsolution: ({len(msg.moves)} move{plural})\n\t"
+    r+= "  ".join([f"{move.disk}-{move.tower}" for move in msg.moves]) or "none"
+    print(r + "\n\n")
 
 sub_game_state = rospy.Subscriber("/game/state", GameState, show_game_state)
-
-def plho_cb(msg):
-    pass #print("received", msg)
-
-sub_decision = rospy.Subscriber("/decisys/decision", GameMoveGoal, plho_cb)
-sub_solution = rospy.Subscriber("/decisys/solution", GameSolveResponse, plho_cb)
+sub_decision = rospy.Subscriber("/decisys/decision", GameMoveGoal, show_decision)
+sub_solution = rospy.Subscriber("/decisys/solution", GameSolveResponse, show_solution)
 
 rospy.spin()

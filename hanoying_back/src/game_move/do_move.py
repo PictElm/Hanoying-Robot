@@ -1,9 +1,10 @@
 #! /usr/bin/python3
 from typing import Callable, Any
-
 import rospy
-
 from hanoying_back.msg import GameMoveGoal, GameMoveFeedback
+FeedbackCb = Callable[[GameMoveFeedback], Any]
+SuccessCb = Callable[[], Any]
+FailureCb = Callable[[int], Any]
 
 try:
     import sim
@@ -16,20 +17,9 @@ try:
 except Exception as e:
     exit("Could not setup remote API client (" + e + ")")
 
-
-def move(game_move: GameMoveGoal, on_feedback: Callable[[GameMoveFeedback], Any], on_success: Callable[[], Any], on_failure: Callable[[int], Any]):
+def move(move: GameMoveGoal, on_feedback: FeedbackCb, on_success: SuccessCb, on_failure: FailureCb):
     can_do = True
     reason = 0
-
-    # TODO: remove..? 2 first checks should be done elswhere
-
-    if not (disk := game_move.disk) in rospy.get_param("/game/disks", "").split(";"):
-        can_do = False
-        reason|= 1
-
-    if not (tower := game_move.tower) in rospy.get_param("/game/towers", "").split(";"):
-        can_do = False
-        reason|= 2
 
     # disk and tower locations can be obtained using:
     # ```
@@ -41,13 +31,15 @@ def move(game_move: GameMoveGoal, on_feedback: Callable[[GameMoveFeedback], Any]
     # (we assume tower is reachable, but disk is not necessarily on a tower)
     # and compute trajectory
     # 
-    # if `tower=="floating"`, the position in `game_move.floating_point`
+    # if `tower=="floating"`, the position in `move.floating_point`
     # should be checked for reachability
     # 
-    # if any position is unreachable, the appropriate flags should be set:
+    # if any position is unreachable, the appropriate flag(s) should be set:
     # ```
-    # can_do = False  # signals to abort
-    # reason|= 4      # signals reason is 'unreachable'
+    # reason|= 1      # signals reason 'disk unreachable'
+    # reason|= 2      # signals reason 'tower unreachable'
+    # reason|= 4      # signals reason 'point unreachable'
+    # can_do = False  # signals to abort (call on_failure and abort)
     # ```
 
     if not can_do:
@@ -58,7 +50,8 @@ def move(game_move: GameMoveGoal, on_feedback: Callable[[GameMoveFeedback], Any]
         feedback = GameMoveFeedback()
 
         # move piece in CoppeliaSim with setStringSignal("move", -)
-        sim.simxSetStringSignal(simxClient, "move", f"{disk}-{tower}", sim.simx_opmode_oneshot)
+        simMove = f"{move.disk}-{move.tower}"
+        sim.simxSetStringSignal(simxClient, "move", simMove, sim.simx_opmode_oneshot)
 
         for k in range(101): # let's just pretend the robot is moving for 2s...
             rospy.sleep(.02)

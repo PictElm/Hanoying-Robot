@@ -40,7 +40,11 @@ def load_game_param(diskNamesParam: str):
 
 diskNamesParam = ""
 pub = rospy.Publisher("/game/raw", GameRaw, queue_size=10)
-rate = rospy.Rate(3)
+rate = rospy.Rate(10)
+
+# CoppeliaSim scene (coppeliasim_scene.ttt) is set to use the Newton physics engine
+# with a dt=50ms which is equivalent to a publication rate of 20hz on every
+# `/game/sim/disk{name}`; sim_to_raw halves the rate to around 10hz
 
 while not rospy.is_shutdown():
     if diskNamesParam != (diskNamesParam := rospy.get_param("/game/disks", "")):
