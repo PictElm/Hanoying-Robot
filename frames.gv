@@ -1,0 +1,13 @@
+digraph G {
+"Hanoy" -> "Disk1"[label="Broadcaster: /gui\nAverage rate: 10.187 Hz\nMost recent transform: 1612374188.994 ( 0.075 sec old)\nBuffer length: 4.908 sec\n"];
+"map" -> "Hanoy"[label="Broadcaster: /gui\nAverage rate: 1.226 Hz\nMost recent transform: 1612374188.960 ( 0.109 sec old)\nBuffer length: 4.077 sec\n"];
+"Hanoy" -> "Disk3"[label="Broadcaster: /gui\nAverage rate: 10.187 Hz\nMost recent transform: 1612374188.995 ( 0.074 sec old)\nBuffer length: 4.908 sec\n"];
+"Hanoy" -> "Disk2"[label="Broadcaster: /gui\nAverage rate: 10.198 Hz\nMost recent transform: 1612374188.995 ( 0.074 sec old)\nBuffer length: 4.903 sec\n"];
+"Hanoy" -> "TowerA"[label="Broadcaster: /gui\nAverage rate: 1.226 Hz\nMost recent transform: 1612374188.947 ( 0.122 sec old)\nBuffer length: 4.077 sec\n"];
+"Hanoy" -> "TowerC"[label="Broadcaster: /gui\nAverage rate: 1.226 Hz\nMost recent transform: 1612374188.953 ( 0.117 sec old)\nBuffer length: 4.077 sec\n"];
+"Hanoy" -> "TowerB"[label="Broadcaster: /gui\nAverage rate: 1.226 Hz\nMost recent transform: 1612374188.960 ( 0.109 sec old)\nBuffer length: 4.077 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1612374189.069"[ shape=plaintext ] ;
+ }->"map";
+}
