@@ -42,6 +42,8 @@ Reminder: the parameters, topics, services and action servers are all provided b
 
 ### Parameters
   - `/decisys/rate: double`
+  - `/game/move/skip_move_validation: bool`
+
   - `/game/allowed_disk_distance: double`
   - `/game/towers: string`
   - `/game/disks: string`
@@ -49,6 +51,7 @@ Reminder: the parameters, topics, services and action servers are all provided b
 
 ### Topics
   - `/game/sim/disk{name}: geometry_msgs/Point` (published from CoppeliaSim for compatibility reasons)
+
   - `/game/raw: hanoying_back/GameRaw`
   - `/game/state: hanoying_back/GameState`
   - `/decisys/decision: hanoying_back/GameMoveGoal`
@@ -69,7 +72,7 @@ Reminder: the parameters, topics, services and action servers are all provided b
   - `/game/sim/disk{name}`
 
 ### `game_state.py`
-  - `/game/allowed_disk_distance` (defaults to .1m)
+  - `/game/allowed_disk_distance` (defaults to 0.1m)
   - `/game/towers`
   - `/game/tower{name}/{x|y|z}`
   - `/game/raw`
@@ -78,8 +81,8 @@ Reminder: the parameters, topics, services and action servers are all provided b
   - &dash;
 
 ### `game_move.py`
-  - `/game/towers`
-  - `/game/disks`
+  - `/game/move/skip_move_validation` (default to false)
+  - `/game/tower{name}/{x|y|z}`
   - `/game/state`
 
 ### `decision_system.py`

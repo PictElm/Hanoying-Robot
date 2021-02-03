@@ -47,9 +47,20 @@ sensor_msgs/Image cam2
 double weights[]
 ```
 
-Another point will be to update the `game_state/process.py` which must process a raw `GameRaw` message into a usable `GameState` message.
+Another point will be to update the `game_state/process.py` which must process a raw `GameRaw` message into a usable `GameState` message. The later will be passed around to your `process.py`, `solver.py` and `rules.py`.
 
-Finally, the control of the robot needs to be adapted in the `game_move/do_move.py`.
+Finally, the control of the robot needs to be adapted in the `game_move/do_move.py`. The third part of the `GameMove.action` file (feedback) may be adapted as needed.
+
+Example:
+```GameMove.action
+[..]
+---
+[..]
+---
+float32 percent
+geometry_msgs/Transform wrist_tf
+float32 eta
+```
 
 ## Changing the game
 
@@ -69,8 +80,8 @@ In the `hanoying_front` package:
   - `src/ctrl/ctrl.py` (see comments in file, mainly used for debugging RN...)
   - `src/gui/gui.py` sub to `/game/state`, `/decisys/*` and whatever else you want, make yourself at home
 
-[^1]: In the action file, only needs to be updated the goal (first part) and feedback (last part) as needed; `reason` should carry custom flags to interpret why a move failed (only the bit 8 is reserved: -128 aborted/preempted).
+[^1]: In the `.action` file, only needs to be updated the goal (first part) and feedback (last part) as needed; `reason` should carry custom flags to interpret why a move failed; only the bits 1 (move not valid) and 8 (aborted/preempted) are reserved.
 
-[^2]: This node is only expected to do the move, regardless of validity regarding game rules (only failing when the move is not possible); for move validity check against game rules, see `game_solve/rules.py`.
+[^2]: This part of the node is only expected to do the move, regardless of validity regarding game rules (only failing when the move is not possible), moves passed to the function in `do_move.py` are valid (except it the parameter `/game/move/skip_move_validation` is set); the implementation of the validity check should be in `game_solve/rules.py`.
 
 [^3]: `GameMoveGoal` correspond to the first part of `GameMove.action`, see [this list](OBJ_LIST.md#Types) for more details list of the added ROS types.

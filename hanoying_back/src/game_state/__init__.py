@@ -8,13 +8,13 @@ needs to be updated to process it to a usable GameState
 
 @ros_param
     /game/allowed_disk_distance: double
-        max distance between a disk and a tower's center
-        for the disk to be considered on the tower
+        [process.py] max distance between a disk and a tower's center
+                     for the disk to be considered on the tower
     /game/towers: string
-        ;-separated list of tower names
+        [process.py] ;-separated list of tower names
     /game/tower{name}/{x|y|z}: double
-        position of the tower {name}, note: z is supposed
-        to be irrelevant (vertical)
+        [process.py] position of the tower {name}, note: z is supposed
+                     to be irrelevant (vertical)
 
 @ros_sub
     /game/raw: hanoying_back/GameRaw
