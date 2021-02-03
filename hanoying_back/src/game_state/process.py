@@ -48,12 +48,12 @@ class TowerObject:
 class DiskObject:
     def __init__(self, name: str, pos: PointObject, towers: List[TowerObject], floating: TowerObject):
         self.name = name
-        self.pos = PointObject(0, 0, 0)
+        self.pos = pos
         self._tower = floating
 
         closest, shortest = floating, float("inf")
         for it in towers:
-            distance = pos.sq_xy_distance(it.pos)
+            distance = self.pos.sq_xy_distance(it.pos)
             if distance < shortest:
                 shortest = distance
                 closest = it
