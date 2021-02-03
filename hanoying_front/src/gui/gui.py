@@ -1,8 +1,9 @@
 #! /usr/bin/python3
 import rospy
+import roslaunch
 
 import tf
-import roslaunch
+import math
 
 from std_msgs.msg import Header, ColorRGBA
 from geometry_msgs.msg import Pose, Quaternion, Vector3, Point
@@ -39,20 +40,71 @@ def show_game_state(msg: GameState):
             ns="/game/disks",
             id=int(name),
 
+            type=Marker.CYLINDER,
+            scale=Vector3(.2, .2, .2),
             pose=Pose(
                 position=Point(0, 0, 0),
                 orientation=Quaternion(0, 0, 0, 1),
             ),
-            type=Marker.CYLINDER,
-            scale=Vector3(1, 1, 1),
 
             color=ColorRGBA(random(), random(), random(), 1),
         ))
 
 def show_decision(msg: GameMoveGoal):
-    return
-    r = f"\ndecision: {msg.disk}-{msg.tower}"
-    print(r + "\n\n")
+    for disk in rospy.wait_for_message("/game/state", GameState).disks:
+        if disk.name == msg.disk:
+            disk_x = disk.point.x
+            disk_y = disk.point.y
+            disk_z = disk.point.z
+            break
+    tower_x = rospy.get_param(f"/game/tower{msg.tower}/x", 0)
+    tower_y = rospy.get_param(f"/game/tower{msg.tower}/y", 0)
+    tower_z = rospy.get_param(f"/game/tower{msg.tower}/z", 0)
+
+    count = 20
+    f = lambda a, b, t: (1-t)*a + t*b
+    curve = [Point(
+        x=f(disk_x, tower_x, k/count),
+        y=f(disk_y, tower_y, k/count),
+        z=f(disk_z, tower_z, k/count) + ( (count-k)*k * 4*.2 )/count/count,
+    ) for k in range(count+1)]
+
+    direction_x = curve[-1].x - curve[0].x
+    direction_y = curve[-1].y - curve[0].y
+    angle = math.atan2(direction_y, direction_x)
+    xyzw = tf.transformations.quaternion_from_euler(0,0,angle)
+
+    pub_markers.publish(Marker(
+        header=Header(frame_id="map"),
+        lifetime=rospy.Duration(),
+
+        ns="/decisys/decision",
+        id=0,
+
+        type=Marker.LINE_STRIP,
+        scale=Vector3(x=.012),
+        pose=Pose(position=Point(0,0,0), orientation=Quaternion(0,0,0,1)),
+        points=curve,
+
+        color=ColorRGBA(random(), random(), random(), 1),
+    ))
+
+    pub_markers.publish(Marker(
+        header=Header(frame_id="map"),
+        lifetime=rospy.Duration(),
+
+        ns="/decisys/decision",
+        id=1,
+
+        type=Marker.ARROW,
+        scale=Vector3(.2, .042, .042),
+        pose=Pose(
+            position=curve[count//2],
+            orientation=Quaternion(xyzw[0], xyzw[1], xyzw[2], xyzw[3]),
+        ),
+
+        color=ColorRGBA(random(), random(), random(), 1),
+    ))
 
 def show_solution(msg: GameSolveResponse):
     return
