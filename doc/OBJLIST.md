@@ -1,6 +1,6 @@
-Reminder: the parameters, topics, services and action servers are all provided by the `hanoying_back` package, or CoppeliaSim; so the associated types (msg, srv and action) are also part of `hanoying_back`.
+Reminder: the parameters, topics, services and action servers are all provided by the `hanoying_back` package, or CoppeliaSim; so the associated types (msg, srv and action) are also part of `hanoying_back`. `hanoying_front` only contains the nodes `ctrl` and `gui`. `/game/sim/disk{name}` and `sim_to_raw` are not meant to stay.
 
-**TODO** some readable dependency graph.
+![system graph](hanoying.png)
 
 ## Types
 

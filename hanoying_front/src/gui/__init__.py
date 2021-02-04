@@ -2,7 +2,7 @@
 inits node 'gui'
 
 @ros_param
-    /game/tower{name}{x|y|z}: double
+    /game/tower{name}/{x|y|z}: double
         to get the destination tower's position
 
 @ros_sub

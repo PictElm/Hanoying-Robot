@@ -1,0 +1,81 @@
+## === Legend
+#  circles: nodes
+#  solid boxes: topics
+#  box3d: action server
+#  dashed boxes: services
+#  plaintext: param from the server
+
+digraph G {
+  node [shape=ellipse];          "node";                  sim_to_raw;game_state;game_solve;game_move;decision_system;ctrl;gui;
+  node [shape=box];              "topic";                 "/game/sim/disk{name}";"/game/raw";"/game/state";"/decisys/decision";"/decisys/solution";
+  node [shape=box3d];            "action server";        "/game/move";
+  node [shape=box style=dashed]; "service";               "/game/solve";"/game/solve/valid";"/game/solve/possible";
+  node [shape=plaintext];        "param from the server"; "/decisys/rate";"/game/move/skip_move_validation";"/game/allowed_disk_distance";"/game/towers";"/game/disks";"/game/tower{name}/{x|y|z}";
+
+  subgraph cluster_param {
+    label="ROS param server";
+    graph[style=dotted];
+
+    "/decisys/rate";
+    "/game/move/skip_move_validation";
+    "/game/allowed_disk_distance";
+    "/game/towers";
+    "/game/disks";
+    "/game/tower{name}/{x|y|z}";
+  };
+
+  subgraph cluster_sim {
+    label="Simulation";
+    graph[style=dotted];
+
+    sim_to_raw;
+    "/game/sim/disk{name}";
+  };
+
+  subgraph cluster_legend {
+    label="Legend";
+
+    "" -> "node" -> "topic" -> "action server" -> "service" -> "param from the server" [style=invis];
+  };
+
+## ---
+
+  sim_to_raw -> "/game/raw";
+
+  game_state -> "/game/state";
+
+  game_solve -> "/game/solve";
+  game_solve -> "/game/solve/valid";
+  game_solve -> "/game/solve/possible";
+
+  game_move -> "/game/move";
+
+  decision_system -> "/decisys/decision";
+  decision_system -> "/decisys/solution";
+
+## ---
+
+  "/game/disks" -> sim_to_raw;
+  "/game/sim/disk{name}" -> sim_to_raw;
+
+  "/game/allowed_disk_distance" -> game_state;
+  "/game/towers" -> game_state;
+  "/game/tower{name}/{x|y|z}" -> game_state;
+  "/game/raw" -> game_state;
+
+  "/game/move/skip_move_validation" -> game_move;
+  "/game/tower{name}/{x|y|z}" -> game_move;
+  "/game/state" -> game_move;
+  "/game/solve/valid" -> game_move;
+
+  "/decisys/rate" -> decision_system;
+  "/game/state" -> decision_system;
+  "/game/solve" -> decision_system;
+
+  "/game/move" -> ctrl;
+
+  "/game/tower{name}/{x|y|z}" -> gui;
+  "/game/state" -> gui;
+  "/decisys/decision" -> gui;
+  "/decisys/solution" -> gui;
+}
