@@ -29,7 +29,7 @@ Reminder: the parameters, topics, services and action servers are all provided b
 
 ## Objects
 
-### Nodes (see dependencies [here](#Dependencies))
+### Nodes
   - `hanoying_back`
     - [`sim_to_raw.py`](../hanoying_back/src/sim_to_raw/sim_to_raw.py) (to be removed)
     - [`game_state.py`](../hanoying_back/src/game_state/game_state.py)
