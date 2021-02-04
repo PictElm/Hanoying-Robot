@@ -51,6 +51,9 @@ def show_game_state(msg: GameState):
         ))
 
 def show_decision(msg: GameMoveGoal):
+    disk_x = 0
+    disk_y = 0
+    disk_z = 0
     for disk in rospy.wait_for_message("/game/state", GameState).disks:
         if disk.name == msg.disk:
             disk_x = disk.point.x
