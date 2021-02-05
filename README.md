@@ -1,6 +1,7 @@
 # The Hanoying Robot
 
-> First: create a catkin workspace and put this repo in the `src/` directory.
+> First: create a catkin workspace and put this repo in the `src/` directory.<br>
+> Remark: ROS1.noetic (1.15.9), Python 3.8.5 (64), Ubuntu 20 (.04.2 LTS)
 
 This ROS project presents 2 packages (`hanoying_back`, `hanoying_front`).
 

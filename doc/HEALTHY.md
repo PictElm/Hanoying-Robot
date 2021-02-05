@@ -2,11 +2,11 @@ A "healthy" system:
 
 `$ rosrun rqt_graph rqt_graph`
 
-![rqt_graph](rqtgraph_nodetopic_all.png)
+![rqt_graph](img/rqtgraph_nodetopic_all.png)
 
 `$ rosrun tf view_frames`
 
-![tf_frames](frames.png)
+![tf_frames](img/frames.png)
 
 `$ rostopic list`
 ```

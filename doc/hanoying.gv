@@ -6,11 +6,15 @@
 #  plaintext: param from the server
 
 digraph G {
+  compound=true;
+
   node [shape=ellipse];          "node";                  sim_to_raw;game_state;game_solve;game_move;decision_system;ctrl;gui;
   node [shape=box];              "topic";                 "/game/sim/disk{name}";"/game/raw";"/game/state";"/decisys/decision";"/decisys/solution";
   node [shape=box3d];            "action server";        "/game/move";
   node [shape=box style=dashed]; "service";               "/game/solve";"/game/solve/valid";"/game/solve/possible";
-  node [shape=plaintext];        "param from the server"; "/decisys/rate";"/game/move/skip_move_validation";"/game/allowed_disk_distance";"/game/towers";"/game/disks";"/game/tower{name}/{x|y|z}";
+  node [shape=plaintext];        "param from the server"; "/decisys/rate";"/game/move/skip_move_validation";"/game/allowed_disk_distance";"/game/towers";"/game/disks";"/game/tower{name}/{x|y|z}";"'move' string signal";
+
+## ---
 
   subgraph cluster_param {
     label="ROS param server";
@@ -35,7 +39,15 @@ digraph G {
   subgraph cluster_legend {
     label="Legend";
 
-    "" -> "node" -> "topic" -> "action server" -> "service" -> "param from the server" [style=invis];
+    "node" -> "topic" [style=invis];
+    "action server" -> "service" -> "param from the server" [style=invis];
+  };
+
+  subgraph cluster_sim_ {
+    label="Simulation ";
+    graph[style=dotted];
+
+    "'move' string signal";
   };
 
 ## ---
@@ -49,9 +61,11 @@ digraph G {
   game_solve -> "/game/solve/possible";
 
   game_move -> "/game/move";
+  "/game/move" -> "'move' string signal" [lhead=cluster_sim_];
 
   decision_system -> "/decisys/decision";
   decision_system -> "/decisys/solution";
+  decision_system -> "/game/move" [style=dashed];
 
 ## ---
 
@@ -72,7 +86,7 @@ digraph G {
   "/game/state" -> decision_system;
   "/game/solve" -> decision_system;
 
-  "/game/move" -> ctrl;
+  ctrl -> "/game/move";
 
   "/game/tower{name}/{x|y|z}" -> gui;
   "/game/state" -> gui;
