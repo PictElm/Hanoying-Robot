@@ -29,16 +29,16 @@ class DiskObject:
 
 disks: List[DiskObject] = []
 
-def load_game_param(diskNamesParam: str):
+def load_game_param(disk_names_param: str):
     global disks
 
     for it in disks:
         it.unsubscribe()
 
-    diskNames = diskNamesParam.split(';')
-    disks = [DiskObject(name) for name in diskNames if name]
+    disk_names = disk_names_param.split(';')
+    disks = [DiskObject(name) for name in disk_names if name]
 
-diskNamesParam = ""
+disk_names_param = ""
 pub = rospy.Publisher("/game/raw", GameRaw, queue_size=10)
 rate = rospy.Rate(10)
 
@@ -47,8 +47,8 @@ rate = rospy.Rate(10)
 # `/game/sim/disk{name}`; sim_to_raw halves the rate to around 10hz
 
 while not rospy.is_shutdown():
-    if diskNamesParam != (diskNamesParam := rospy.get_param("/game/disks", "")):
-        load_game_param(diskNamesParam)
+    if disk_names_param != (disk_names_param := rospy.get_param("/game/disks", "")):
+        load_game_param(disk_names_param)
 
     msg_names = []
     msg_points = []

@@ -72,9 +72,9 @@ class DiskObject:
         return Disk(name=self.name, point=self.pos.get_message())
 
 def process(raw: GameRaw) -> GameState:
-    towerNames = rospy.get_param("/game/towers", "").split(';')
+    tower_names = rospy.get_param("/game/towers", "").split(';')
 
-    towers = [TowerObject(name, PointObject("/game/tower" + name)) for name in towerNames if name]
+    towers = [TowerObject(name, PointObject("/game/tower" + name)) for name in tower_names if name]
     floating = TowerObject("floating", None)
     disks = [DiskObject(name, PointObject(point), towers, floating) for name, point in zip(raw.disk_names, raw.disk_points)]
 

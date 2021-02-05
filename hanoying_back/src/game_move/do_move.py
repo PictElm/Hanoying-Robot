@@ -23,7 +23,7 @@ def move(move: GameMoveGoal, on_feedback: FeedbackCb, on_success: SuccessCb, on_
 
     # disk and tower locations can be obtained using:
     # ```
-    # src = rospy.wait_for_message("/game/state", GameState).disk WHERE name="{disk}"
+    # src = SELECT FROM rospy.wait_for_message("/game/state", GameState).disk WHERE name="{disk}"
     # dst = rospy.get_param(f"/game/tower{tower}/{x|y|z}")
     # ```
     # 
