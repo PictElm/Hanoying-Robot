@@ -23,9 +23,9 @@ def callback_possible(req):
     res.moves = list_possible(req.state)
     return res
 
-srv_solve = rospy.Service('/game/solve', GameSolve, callback_solve)
-srv_valid = rospy.Service('/game/solve/valid', GameSolveValidate, callback_validate)
-srv_possib = rospy.Service('/game/solve/possible', GameSolveList, callback_possible)
+srv_solve = rospy.Service("/game/solve", GameSolve, callback_solve)
+srv_valid = rospy.Service("/game/solve/valid", GameSolveValidate, callback_validate)
+srv_possib = rospy.Service("/game/solve/possible", GameSolveList, callback_possible)
 print("Solver is ready.")
 
 rospy.spin()

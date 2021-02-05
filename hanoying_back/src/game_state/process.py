@@ -37,6 +37,11 @@ class TowerObject:
         self._disks: 'List[DiskObject]' = []
 
     def append(self, disk: 'DiskObject'):
+        pz = -float('inf')
+        for k,other in enumerate(self._disks):
+            if pz < disk.pos.z < (pz := other.pos.z):
+                self._disks.insert(k, disk)
+                return
         self._disks.append(disk)
 
     def remove(self, disk: 'DiskObject'):
@@ -51,7 +56,7 @@ class DiskObject:
         self.pos = pos
         self._tower = floating
 
-        closest, shortest = floating, float("inf")
+        closest, shortest = floating, float('inf')
         for it in towers:
             distance = self.pos.sq_xy_distance(it.pos)
             if distance < shortest:
@@ -67,9 +72,9 @@ class DiskObject:
         return Disk(name=self.name, point=self.pos.get_message())
 
 def process(raw: GameRaw) -> GameState:
-    towerNames = rospy.get_param("/game/towers", "").split(';')
+    tower_names = rospy.get_param("/game/towers", "").split(';')
 
-    towers = [TowerObject(name, PointObject("/game/tower" + name)) for name in towerNames if name]
+    towers = [TowerObject(name, PointObject("/game/tower" + name)) for name in tower_names if name]
     floating = TowerObject("floating", None)
     disks = [DiskObject(name, PointObject(point), towers, floating) for name, point in zip(raw.disk_names, raw.disk_points)]
 
