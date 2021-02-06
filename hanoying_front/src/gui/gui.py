@@ -24,6 +24,26 @@ rviz = launcher.launch(roslaunch.core.Node("rviz", "rviz"))
 br = tf.TransformBroadcaster()
 pub_markers = rospy.Publisher("/visualization_marker", Marker, queue_size=5)
 
+DISK_COLORS = {
+    '1': ColorRGBA(1,0,0,1),
+    '2': ColorRGBA(0,1,0,1),
+    '3': ColorRGBA(0,0,1,1),
+}
+DISK_SHAPE = { # (radius, height)
+    '1': (1, 1),
+    '2': (.66, 1),
+    '3': (.33, 1),
+}
+TOWER_COLORS = {
+    'A': ColorRGBA(0,1,1,1),
+    'B': ColorRGBA(0,1,1,1),
+    'C': ColorRGBA(0,1,1,1),
+}
+DECISION_COLOR = {
+    'path': ColorRGBA(1,0,1,1),
+    'arrow': ColorRGBA(1,0,1,1),
+}
+
 from random import random
 def show_game_state(msg: GameState):
     for disk in msg.disks:
@@ -33,6 +53,9 @@ def show_game_state(msg: GameState):
 
         br.sendTransform((pos.x,pos.y,pos.z), (0,0,0,1), rospy.Time.now(), frame, "map")
 
+        r = DISK_SHAPE[name][0]*.1
+        h = DISK_SHAPE[name][1]*.1
+
         pub_markers.publish(Marker(
             header=Header(frame_id=frame),
             lifetime=rospy.Duration(),
@@ -41,13 +64,13 @@ def show_game_state(msg: GameState):
             id=int(name),
 
             type=Marker.CYLINDER,
-            scale=Vector3(.2, .2, .2),
+            scale=Vector3(r, r, h),
             pose=Pose(
                 position=Point(0, 0, 0),
                 orientation=Quaternion(0, 0, 0, 1),
             ),
 
-            color=ColorRGBA(random(), random(), random(), 1),
+            color=DISK_COLORS[name],
         ))
 
 def show_decision(msg: GameMoveGoal):
@@ -60,9 +83,16 @@ def show_decision(msg: GameMoveGoal):
             disk_y = disk.point.y
             disk_z = disk.point.z
             break
+    else:
+        return
+
     tower_x = rospy.get_param(f"/game/tower{msg.tower}/x", 0)
     tower_y = rospy.get_param(f"/game/tower{msg.tower}/y", 0)
     tower_z = rospy.get_param(f"/game/tower{msg.tower}/z", 0)
+    if msg.tower == "floating":
+        tower_x = msg.floating_point.x
+        tower_y = msg.floating_point.y
+        tower_z = msg.floating_point.z
 
     count = 20
     f = lambda a, b, t: (1-t)*a + t*b
@@ -74,8 +104,10 @@ def show_decision(msg: GameMoveGoal):
 
     direction_x = curve[-1].x - curve[0].x
     direction_y = curve[-1].y - curve[0].y
-    angle = math.atan2(direction_y, direction_x)
-    xyzw = tf.transformations.quaternion_from_euler(0,0,angle)
+    direction_z = curve[-1].z - curve[0].z
+    rotate = math.atan2(direction_y, direction_x)
+    slop = math.atan2(direction_z, math.hypot(direction_y, direction_x))
+    xyzw = tf.transformations.quaternion_from_euler(0, -slop, rotate)
 
     pub_markers.publish(Marker(
         header=Header(frame_id="map"),
@@ -89,7 +121,7 @@ def show_decision(msg: GameMoveGoal):
         pose=Pose(position=Point(0,0,0), orientation=Quaternion(0,0,0,1)),
         points=curve,
 
-        color=ColorRGBA(random(), random(), random(), 1),
+        color=DECISION_COLOR['path'],
     ))
 
     pub_markers.publish(Marker(
@@ -106,26 +138,38 @@ def show_decision(msg: GameMoveGoal):
             orientation=Quaternion(xyzw[0], xyzw[1], xyzw[2], xyzw[3]),
         ),
 
-        color=ColorRGBA(random(), random(), random(), 1),
+        color=DECISION_COLOR['arrow'],
     ))
 
 def show_solution(msg: GameSolveResponse):
+    # TODO
     return
-    plural = "s" if len(msg.moves) else ""
-    r = f"\nsolution: ({len(msg.moves)} move{plural})\n\t"
-    r+= "  ".join([f"{move.disk}-{move.tower}" for move in msg.moves]) or "none"
-    print(r + "\n\n")
 
 sub_game_state = rospy.Subscriber("/game/state", GameState, show_game_state)
 sub_decision = rospy.Subscriber("/decisys/decision", GameMoveGoal, show_decision)
 sub_solution = rospy.Subscriber("/decisys/solution", GameSolveResponse, show_solution)
 
 while not rospy.is_shutdown() and rviz.is_alive():
-    for name in rospy.get_param("/game/towers", "").split(';'):
+    for k,name in enumerate(rospy.get_param("/game/towers", "").split(';')):
         x = rospy.get_param(f"/game/tower{name}/x", 0)
         y = rospy.get_param(f"/game/tower{name}/y", 0)
         z = rospy.get_param(f"/game/tower{name}/z", 0)
         br.sendTransform((x,y,z), (0,0,0,1), rospy.Time.now(), f"Tower{name}", "Hanoy")
+
+        pub_markers.publish(Marker(
+            header=Header(frame_id=f"Tower{name}"),
+            lifetime=rospy.Duration(),
+
+            ns="/game/towers",
+            id=k,
+
+            type=Marker.LINE_STRIP,
+            scale=Vector3(x=.012),
+            pose=Pose(position=Point(0,0,0), orientation=Quaternion(0,0,0,1)),
+            points=[Point(0,0,0), Point(0,0,10)],
+
+            color=TOWER_COLORS[name],
+        ))
+
     br.sendTransform((0,0,0), (0,0,0,1), rospy.Time.now(), "Hanoy", "map")
     rospy.sleep(1)
-#rospy.spin()
