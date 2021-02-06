@@ -3,7 +3,7 @@
 > First: create a catkin workspace and put this repo in the `src/` directory.<br>
 > Remark: ROS1.noetic (1.15.9), Python 3.8.5 (64), Ubuntu 20 (.04.2 LTS).
 
-> Notice: if a `ERROR: cannot launch node of type [{file}]` occures, you may need to `chmod +x` the mentioned file.
+> Notice: if a `ERROR: cannot launch node of type [{file}]` occurs, you may need to `chmod +x` the mentioned file.
 
 This ROS project presents 2 packages (`hanoying_back`, `hanoying_front`).
 
@@ -16,7 +16,7 @@ This version relies on a simulator (CoppeliaSim) but can be adapted to work with
 To run the setup:
   1. you must have a ROS master running at all time (`roscore`) and source your `/opt/ros/${version}/setup.bash` from every terminal
   0. start CoppeliaSim and ensure both ROSInterface and RemoteApi plugins are loaded successfully, start the simulation [coppeliasim_scene.ttt](coppeliasim_scene.ttt)
-  0. add the Python binding of the RemoteApi `sim.py` to $PYTHONPATH (it should be in `${CoppeliaSim root dir}/programming/remoteApiBindings/python`)
+  0. add the Python binding of the RemoteApi `sim.py` to `$PYTHONPATH` (it should be in `${CoppeliaSim root dir}/programming/remoteApiBindings/python`)
   0. (make sure to have the `remoteApi.so` in the same folder as `sim.py`, if it's not, copy it over from the `/remoteApiBindings/lib/lib`)
   0. build your catkin_workspace and source everything you can to save you sanity, or just:
     * `cd ~/catkin_ws`
@@ -27,7 +27,7 @@ To run the setup:
 
 > Note: it should behave fine even if `hanoying_back`'s nodes are started after, or restarted at anytime, but CoppeliaSim has to be started with the simulation running.
 
-See [this file](doc/HEALTHY.md) for a "healthy" system.
+Refer to [this file](doc/SETUP.md) for more and see [that file](doc/HEALTHY.md) for a "healthy" system.
 
 ## ROS objects list
 
