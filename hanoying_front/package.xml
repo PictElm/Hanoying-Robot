@@ -4,14 +4,11 @@
   <version>0.0.0</version>
   <description>The hanoying_front package</description>
 
-  <maintainer email="cgrenier003@ensc.fr">Célestin Grenier</maintainer>
+  <maintainer email="cgrenier003@ensc.fr">Grenier Célestin</maintainer>
 
-  <!-- One license tag required, multiple allowed, one license per tag -->
-  <!-- Commonly used license strings: -->
-  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>TODO</license>
+  <license>MIT</license>
 
-  <author email="cgrenier003@ensc.fr">Célestin Grenier</author>
+  <author email="cgrenier003@ensc.fr">Grenier Célestin</author>
 
 
   <buildtool_depend>catkin</buildtool_depend>
