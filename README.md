@@ -15,7 +15,7 @@ This version relies on a simulator (CoppeliaSim) but can be adapted to work with
 
 To run the setup:
   1. you must have a ROS master running at all time (`roscore`) and source your `/opt/ros/${version}/setup.bash` from every terminal
-  0. start CoppeliaSim and ensure both ROSInterface and RemoteApi plugins are loaded successfully, start the simulation [coppeliasim_scene.ttt](coppeliasim_scene.ttt)
+  0. start CoppeliaSim and ensure both ROSInterface and RemoteApi plugins are loaded successfully, start the simulation [coppeliasim_scene.ttt](sim/coppeliasim_scene.ttt)
   0. add the Python binding of the RemoteApi `sim.py` to `$PYTHONPATH` (it should be in `${CoppeliaSim root dir}/programming/remoteApiBindings/python`)
   0. (make sure to have the `remoteApi.so` in the same folder as `sim.py`, if it's not, copy it over from the `/remoteApiBindings/lib/lib`)
   0. build your catkin_workspace and source everything you can to save you sanity, or just:

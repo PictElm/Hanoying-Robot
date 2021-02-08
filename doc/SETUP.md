@@ -11,9 +11,11 @@ Look through the logs for `plugin 'ROSInterface': load succeeded.` and `plugin '
 
 ![1](img/Screenshot1.png)
 
-Open the scene [coppeliasim_scene.ttt](../coppeliasim_scene.ttt). The scene hierarchy display show the following:
+Open the scene [coppeliasim_scene.ttt](../sim/coppeliasim_scene.ttt). The scene hierarchy display show the following:
 
 ![2](img/Screenshot2.png)
+
+(The child script attached to the Hanoy object is [this non-threaded LUA](../sim/nonthreaded_childscript_hanoy.lua).)
 
 Start the simulation (it is recommended to use the Newton engine and have real-time simulations on).
 
