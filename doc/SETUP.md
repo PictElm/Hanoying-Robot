@@ -37,7 +37,7 @@ This node should start a R-Viz window. Once it is fully started, look for the Ad
 
 In the dialog that open, switch to the tab "By topic" and choose "Markers".
 
-![7](img/Screenshot7.png) <!-- TODO: wrong tab -->
+![7](img/Screenshot7.png)
 
 The graphical view should now show the 3 towers (cyan beams), the 3 disks (red, green and blue cylinders) and the decision from the decision_system (`/decisys/decision`) in magenta.
 
@@ -46,4 +46,4 @@ The graphical view should now show the 3 towers (cyan beams), the 3 disks (red, 
 From a new terminal, start a simplified control node.
 > `$ rosrun hanoying_front ctrl.py`
 
-![9](img/Screenshot9.png) <!-- TODO: `> list` -->
+![9](img/Screenshot9.png)
