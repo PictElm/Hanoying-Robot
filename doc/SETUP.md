@@ -1,5 +1,5 @@
 Recommendation: add the following alias and use it from every new terminal.
-> `alias cm="cd ~/catkin_ws ; catkin_make ; source devel/setup.bash`
+> `alias cm="cd ~/catkin_ws ; catkin_make ; source devel/setup.bash"`
 
 Make sure to start a ROS master.
 > `$ roscore`
